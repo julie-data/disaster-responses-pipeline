@@ -28,6 +28,19 @@ from sklearn.model_selection import GridSearchCV
 import pickle
 
 def load_data(database_filepath):
+    
+    '''
+    INPUT
+    database_filepath - the path where the database has been created
+    
+    OUTPUT
+    X - the messages
+    Y - the categories (= labels)
+    Y.columns - the names of the categories
+    
+    This function loads the data and prepare it in a X and Y function to be used by a ML model.
+    '''
+    
     # Get data
     engine = create_engine('sqlite:///'+database_filepath)
     df = pd.read_sql_table('DisasterMessages',engine)
@@ -39,6 +52,22 @@ def load_data(database_filepath):
     return X, Y, Y.columns
 
 def tokenize(text):
+    
+    '''
+    INPUT
+    text - text to tokenize
+    
+    OUTPUT
+    words_lemmed - tokenized text
+    
+    This function transforms a text into something that can be read by a ML model:
+    1. Set to lower case
+    2. Remove punctuation
+    3. Split the text into words
+    4. Remove English stop words
+    5. Lemmatize words (reduce them according to the dictionary)
+    '''
+    
     # Normalize
     text_normalized = re.sub(r"[^a-zA-Z0-9]", " ", text.lower()) 
     
@@ -55,6 +84,16 @@ def tokenize(text):
 
 
 def build_model():
+    
+    '''
+    INPUT
+    
+    OUTPUT
+    cv - final model
+    
+    This function creates a pipeline with a model to run on the data in order to categorize the messages automatically.
+    '''
+    
     # Build pipeline
     randomforest = RandomForestClassifier()
 
@@ -66,8 +105,7 @@ def build_model():
       
     # Get best parameters with gridsearch
     parameters = {
-    'vect__ngram_range': ((1,1), (1,2)),
-    'tfidf__use_idf': (True, False),
+    'tfidf__use_idf': (True, False)
     }
 
     cv = GridSearchCV(pipeline,parameters)
@@ -75,6 +113,19 @@ def build_model():
     return cv
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    
+    '''
+    INPUT
+    model - model we want to evaluate (result from build_model() function)
+    X_test - test split of X
+    Y_test - test split of Y
+    category_names - the names of the possible categories
+    
+    OUTPUT
+    
+    This function scores the model for each category separately.
+    '''
+    
     # Get predictions
     model_pred = pipeline.predict(X_test)
     
@@ -88,6 +139,17 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
+    
+    '''
+    INPUT
+    model - model we want to evaluate (result from build_model() function)
+    model_filepath - where to save the pickle file
+    
+    OUTPUT
+    
+    This function outputs the model in a pickle file.
+    '''
+    
     pkl_filename = model_filepath
     with open(pkl_filename, 'wb') as file:
         pickle.dump(model, file)
