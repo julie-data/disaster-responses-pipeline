@@ -105,7 +105,8 @@ def build_model():
       
     # Get best parameters with gridsearch
     parameters = {
-    'tfidf__use_idf': (True, False)
+        'clf__estimator__max_features': ['auto','log2'],
+        'min_samples_leaf': [1,2]
     }
 
     cv = GridSearchCV(pipeline,parameters)
@@ -127,13 +128,13 @@ def evaluate_model(model, X_test, Y_test, category_names):
     '''
     
     # Get predictions
-    model_pred = pipeline.predict(X_test)
+    model_pred = model.predict(X_test)
     
     # Get scores for each category
     x = 0
     while x<36:
         print(category_names[x])
-        print(classification_report(y_test[y.columns[x]],model_pred[:,x]))
+        print(classification_report(Y_test[Y_test.columns[x]],model_pred[:,x]))
         print('')
         x+=1
 
