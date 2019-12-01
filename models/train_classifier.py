@@ -106,7 +106,7 @@ def build_model():
     # Get best parameters with gridsearch
     parameters = {
         'clf__estimator__max_features': ['auto','log2'],
-        'min_samples_leaf': [1,2]
+        'clf__estimator__min_samples_leaf': [1,2]
     }
 
     cv = GridSearchCV(pipeline,parameters)
