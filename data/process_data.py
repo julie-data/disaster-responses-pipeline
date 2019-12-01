@@ -12,6 +12,8 @@ def load_data(messages_filepath, categories_filepath):
     
     # Merge the two files together
     df = messages.merge(categories, on=('id'))
+    
+    return df
 
 
 def clean_data(df):
@@ -34,13 +36,14 @@ def clean_data(df):
     
     # Remove duplicates
     df = df.drop_duplicates()
+    
+    return df
 
 
 def save_data(df, database_filename):
     engine = create_engine('sqlite:///DisasterMessages.db')
     engine.execute('DROP TABLE IF EXISTS DisasterMessages', con = engine)
     df.to_sql('DisasterMessages', engine, index=False)
-
 
 def main():
     if len(sys.argv) == 4:
