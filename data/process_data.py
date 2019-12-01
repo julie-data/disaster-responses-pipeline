@@ -4,6 +4,16 @@ from sqlalchemy import create_engine
 
 
 def load_data(messages_filepath, categories_filepath):
+    
+    '''
+    INPUT
+    messages_filepath - the path where the file with the messages is stored
+    categories_filepath - the path where the file with the categories is stored
+    
+    OUTPUT
+    df - a dataframe with contains both the messages and categories files content
+    '''
+    
     # Import messages file
     messages = pd.read_csv(messages_filepath)
     
@@ -17,6 +27,20 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
+    
+    '''
+    INPUT
+    df - the dataframe with contains both the messages and categories files conte
+    
+    OUTPUT
+    df - the cleaned dataframe
+    
+    This function takes the dataframe with both the messages and categories and cleans it:
+    1. Split the categories column into one column per category with 1/0
+    2. Replace the category column with one column per category in the main dataframe
+    3. Remove duplicates
+    '''
+    
     # Split the 'categories' column into separate columns
     categories = df['categories'].str.split(";",expand=True)
     
@@ -41,6 +65,15 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
+    
+    '''
+    INPUT
+    df - the cleaned dataframe 
+    database_filename - the path where the database needs to be created
+      
+    This function  creates a database made of the cleaned dataset
+    '''
+    
     engine = create_engine('sqlite:///'+database_filename)
     engine.execute('DROP TABLE IF EXISTS DisasterMessages', con = engine)
     df.to_sql('DisasterMessages', engine, index=False)
