@@ -41,7 +41,7 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
-    engine = create_engine('sqlite:///DisasterMessages.db')
+    engine = create_engine('sqlite:///'+database_filename)
     engine.execute('DROP TABLE IF EXISTS DisasterMessages', con = engine)
     df.to_sql('DisasterMessages', engine, index=False)
 
