@@ -29,14 +29,14 @@ import pickle
 
 def load_data(database_filepath):
     # Get data
-    engine = create_engine(database_filepath)
+    engine = create_engine('sqlite:///'+database_filepath)
     df = pd.read_sql_table('DisasterMessages',engine)
     
     # Split features from labels
     X = df['message']
-    y = df.drop(['id','message','original','genre'],axis=1)
+    Y = df.drop(['id','message','original','genre'],axis=1)
     
-    return X, y
+    return X, Y, Y.columns
 
 def tokenize(text):
     # Normalize
@@ -63,12 +63,7 @@ def build_model():
         ('tfidf',TfidfTransformer()),
         ('clf',MultiOutputClassifier(randomforest))
     ])
-    
-    # Split data and train pipeline
-    X_train, X_test, y_train, y_test = train_test_split(X, y)
-    pipeline.fit(X_train,y_train)
-    y_pred = pipeline.predict(X_test)
-    
+      
     # Get best parameters with gridsearch
     parameters = {
     'vect__ngram_range': ((1,1), (1,2)),
