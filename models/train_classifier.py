@@ -126,18 +126,14 @@ def evaluate_model(model, X_test, Y_test, category_names):
     
     This function scores the model for each category separately.
     '''
-    
+       
     # Get predictions
-    model_pred = model.predict(X_test)
+    y_pred = model.predict(X_test)
     
     # Get scores for each category
-    x = 0
-    while x<36:
-        print(category_names[x])
-        print(classification_report(Y_test[Y_test.columns[x]],model_pred[:,x]))
-        print('')
-        x+=1
-
+    for i in range(len(category_names)):
+        print(category_names[i])
+        print(classification_report(Y_test.iloc[:,i], y_pred[:,i]))
 
 def save_model(model, model_filepath):
     
